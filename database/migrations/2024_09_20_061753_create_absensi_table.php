@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employee', function (Blueprint $table) {
+        Schema::create('absensi', function (Blueprint $table) {
             $table->id();
-            $table->integer('nik');
-            $table->string('name');
-            $table->string('email');
-            $table->string('position');
-            $table->string('no_hp');
-            $table->longText('address');
-            $table->string('qr')->nullable();
+            $table->unsignedBigInteger('employee_id');
+            $table->timestamp('jam');
+            $table->date('tanggal');
+            $table->longtext('address');
+            $table->string('status');
+            $table->string('alasan');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employee');
+        Schema::dropIfExists('absensi');
     }
 };

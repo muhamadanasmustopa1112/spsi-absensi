@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EmployeeResource extends JsonResource
+class AbsensiResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,14 +16,15 @@ class EmployeeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nik' => $this->nik,
-            'name' => $this->name,
-            'email' => $this->email,
-            'position' => $this->position,
-            'no_hp' => $this->no_hp,
+            'jam' => $this->jam,
+            'tanggal' => $this->tanggal,
             'address' => $this->address,
-            'qr_code_url' => $this->qr ? asset('storage/' . $this->qr) : null,
-        ];    
+            'status' => $this->status,
+            'alasan' => $this->alasan,
+            'employee' => new EmployeeResource($this->whenLoaded('employee')),
+        ]; 
+
+        
     }
 
     public function with($request)

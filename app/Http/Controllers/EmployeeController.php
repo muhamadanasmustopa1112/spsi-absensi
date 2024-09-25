@@ -7,6 +7,9 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use Stevebauman\Location\Facades\Location;
 use App\Models\EmployeeModel;
+use App\Models\AbsensiModel;
+use Illuminate\Support\Facades\DB;
+
 
 use Illuminate\Http\Request;
 
@@ -18,6 +21,11 @@ class EmployeeController extends Controller
     public function index()
     {
         //
+        // Mengambil semua data dari tabel employees
+        $items = EmployeeModel::all();
+
+        // Mengirim data ke view
+        return view('dashboard', compact('items'));
     }
 
     /**
@@ -44,8 +52,10 @@ class EmployeeController extends Controller
         
         // Create the user
         $user = EmployeeModel::create([
+            'nik' => 32112323,
             'name' => $request->name,
             'email' => $request->email,
+            'position' => 'STaff',
             'no_hp' => $request->no_hp,
             'address' => $request->address
         ]);
@@ -105,22 +115,26 @@ class EmployeeController extends Controller
     }
 
     public function reverseGeocode($latitude, $longitude)
-    {
-        // Nominatim API URL
+    { 
         $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$latitude}&lon={$longitude}&addressdetails=1";
 
-        // Make the API request
-        $response = Http::get($url);
-
-        // Parse the response JSON
-        $data = $response->json();
-
-        // Check if address is available in the response
-        if (isset($data['address'])) {
-            // Return the display name (full address) or specific address components
-            return $data['display_name'];
-        } else {
-            return 'Address not found';
+        try {
+            $response = Http::get($url);
+            
+            if ($response->successful()) {
+                $data = $response->json();
+                
+                if (isset($data['address'])) {
+                    return $data['display_name'];
+                } else {
+                    return 'Address not found';
+                }
+            } else {
+                return 'Failed to connect to the geocoding service';
+            }
+        } catch (\Exception $e) {
+            \Log::error('Geocoding error: ' . $e->getMessage());
+            return 'Error during geocoding';
         }
     }
 
@@ -135,8 +149,7 @@ class EmployeeController extends Controller
             // $ipAddress = $request->ip();
             \Log::info($request->all());
 
-            // dd($request->all());
-            // // Get the address using the reverse geocode method
+      
             $address = $this->reverseGeocode($latitude, $longitude);
             // $position = Location::get('125.163.109.138');
 
@@ -150,9 +163,101 @@ class EmployeeController extends Controller
         }
     }
 
-    public function absensi()
+    public function absensi($id)
     {
-        return view('absensi');
+        $items = EmployeeModel::findOrFail($id);
+        return view('absensi', compact('items'));
+    }
+
+    public function insertAbsensi(Request $request)
+    {
+        try {
+
+            $latitude = $request->lat; 
+            $longitude = $request->lng;
+
+            $currentTime = now();
+            $eightAM = now()->setTime(8, 0, 0);
+
+            $status;
+            $timeFormat = now()->format('H:i:s');
+            $dateFormat = now()->format('Y-m-d'); 
+            $address = $this->reverseGeocode($latitude, $longitude);
+
+            if ($currentTime->greaterThan($eightAM)) {
+
+                $status = "Terlambat";
+
+        
+                // $data = AbesensiModel::create([
+                //     'employee_id' => $request->employee_id,
+                //     'jam' => $timeFormat,
+                //     'tanggal' => $dateFormat,
+                //     'address' => $address,
+                //     'status' => $status,
+                //     'alasan' => $request->input('reason'),
+                //     'created_at' => now(),
+                //     'updated_at' => now(),
+                // ]);
+
+
+                return $status;
+                
+            } else {
+                $status = "Tepat Waktu";
+            }
+
+            // return $request->employee_id;
+
+        }catch (\Exception $e) {
+            \Log::error($e);
+
+        }
+
+    }
+
+    public function lateAbsensi(Request $request)
+    {
+        try {
+            $latitude = $request->lat; 
+            $longitude = $request->lng;
+        
+            $currentTime = now();
+            $eightAM = now()->setTime(8, 0, 0);
+        
+            $status = "Terlambat";
+            $timeFormat = now()->format('H:i:s');
+            $dateFormat = now()->format('Y-m-d'); 
+            $address = $this->reverseGeocode($latitude, $longitude);
+        
+            $employeeId = $request->employee_id;
+        
+            $existingRecord = DB::table('absensi')
+                                ->where('employee_id', $employeeId)
+                                ->where('tanggal', $dateFormat)
+                                ->exists();
+        
+            if ($existingRecord) {
+                return 'absen-2x';
+            }
+
+            $data = AbsensiModel::create([
+                'employee_id' => $request->employee_id,
+                'jam' => $timeFormat,
+                'tanggal' => $dateFormat,
+                'address' => $address,
+                'status' => $status,
+                'alasan' => $request->alasan
+            ]);
+        
+            if ($data) {
+                return 'success';
+            } else {
+                return 'Failed to save data';
+            }
+        } catch (\Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
     }
     
 }
