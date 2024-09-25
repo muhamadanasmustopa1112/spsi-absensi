@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <title>Absensi</title>
   </head>
@@ -45,6 +46,12 @@
         </div>
       </div>
     </div>
+
+    @if(session('status'))
+        <script>
+      
+        </script>
+    @endif
 
     <script>
       $(document).ready(function() {
@@ -118,15 +125,35 @@
                               alasan: alasan
                           },
                           success: function(response) {
-                              
-                              // if(response == 'Terlambat'){
-                              //   $('#terlambatModal').modal('show');
-                              // }else {
-                              //   console.log(response)
-                              // }
 
-                              console.log(response)
+                            if(response == 'absen-2x'){
+                                Swal.fire({
+                                    title: "Data Error.!",
+                                    text: "Tidak bisa absen 2x",
+                                    icon: "error",
+                                    confirmButtonText: 'OK'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    }
+                                });
+                                
+                            }
 
+                            if(response == 'success') {
+                                
+                                Swal.fire({
+                                    title: "Data Saved.!",
+                                    text: "Selamat anda berhasil melakukan absen",
+                                    icon: "success",
+                                    confirmButtonText: 'OK'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    }
+                                });
+
+                            }
 
                           },
                           error: function(xhr, status, error) {
