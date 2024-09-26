@@ -14,7 +14,8 @@ class AbsensiController extends Controller
      */
     public function index()
     {
-        //
+        //ini test
+
         $absensis = AbsensiModel::with('employee')->get();
         return AbsensiResource::collection($absensis);
     }
