@@ -178,6 +178,8 @@
 
 
           $('#scan-fingerprint').click(function () {
+            
+            e.preventDefault();
 
             const employeeId = "{{$items->id}}"; 
 
