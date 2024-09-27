@@ -52,17 +52,23 @@ class FingerprintController extends Controller
             // Jika data fingerprint sudah ada, lakukan verifikasi
             $storedFingerprintData = json_decode($storedFingerprint->fingerprint_data, true);
 
-            if ($this->compareFingerprint($storedFingerprintData, $fingerprintData)) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Fingerprint verification successful.'
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Fingerprint verification failed.'
-                ], 401);
-            }
+            // if ($this->compareFingerprint($storedFingerprintData, $fingerprintData)) {
+            //     return response()->json([
+            //         'status' => 'success',
+            //         'message' => 'Fingerprint verification successful.'
+            //     ], 200);
+            // } else {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'message' => 'Fingerprint verification failed.'
+            //     ], 401);
+            // }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $storedFingerprintData
+            ], 200);
+
         } catch (\Exception $exception) {
             Log::error('Error processing fingerprint:', ['error' => $exception->getMessage()]);
             return response()->json([
