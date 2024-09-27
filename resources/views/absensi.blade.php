@@ -207,6 +207,8 @@
                         console.log(clientDataJSON);
                         console.log(attestationObject);
 
+                        alert(rawId + clientDataJSON + attestationObject)
+                 
 
                         // $.ajax({
                         //     url: '/fingerprint/scan',
