@@ -40,7 +40,7 @@ class FingerprintController extends Controller
                 // Simpan fingerprint baru
                 Fingerprint::create([
                     'employee_id' => $employee_id,
-                    'fingerprint_data' => base64_encode(json_encode($fingerprintData))
+                    'fingerprint_data' => json_encode($fingerprintData)
                 ]);
 
                 return response()->json([
@@ -50,19 +50,19 @@ class FingerprintController extends Controller
             }
 
             // Jika data fingerprint sudah ada, lakukan verifikasi
-            $storedFingerprintData = json_decode(base64_decode($storedFingerprint->fingerprint_data), true);
-            
-            // if ($this->compareFingerprint($storedFingerprintData, $fingerprintData)) {
-            //     return response()->json([
-            //         'status' => 'success',
-            //         'message' => 'Fingerprint verification successful.'
-            //     ], 200);
-            // } else {
-            //     return response()->json([
-            //         'status' => 'error',
-            //         'message' => 'Fingerprint verification failed.'
-            //     ], 401);
-            // }
+            $storedFingerprintData = json_decode($storedFingerprint->fingerprint_data, true);
+
+            if ($this->compareFingerprint($storedFingerprintData, $fingerprintData)) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Fingerprint verification successful.'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Fingerprint verification failed.'
+                ], 401);
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -111,10 +111,10 @@ class FingerprintController extends Controller
         //
     }
 
-    private function compareFingerprint($storedFingerprint, $newFingerprint)
+    private function compareFingerprint($storedData, $newData)
     {
         // Misalnya, kita bisa menggunakan JSON string comparison
-        return $storedFingerprint === $newFingerprint; // Sesuaikan dengan logika perbandingan yang sebenarnya
+        return $storedData['rawId'] === $newData['rawId'];
 
     }
 }
