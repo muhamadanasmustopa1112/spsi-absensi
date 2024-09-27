@@ -230,9 +230,9 @@
                             contentType: 'application/json',
                             success: function (response) {
                                 if (response.status === 'success') {
-                                    alert('Fingerprint matched!');
+                                    alert(response.message);
                                 } else {
-                                    alert('Fingerprint not recognized.');
+                                    alert(response.message);
                                 }
                             },
                             error: function (xhr, status, error) {

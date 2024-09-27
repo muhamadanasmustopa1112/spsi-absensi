@@ -97,11 +97,10 @@ class FingerprintController extends Controller
         //
     }
 
-    private function compareFingerprint($storedData, $receivedData)
+    private function compareFingerprint($storedFingerprint, $newFingerprint)
     {
         // Misalnya, kita bisa menggunakan JSON string comparison
-        return $storedData['rawId'] === $receivedData['rawId']
-            && $storedData['clientDataJSON'] === $receivedData['clientDataJSON']
-            && $storedData['attestationObject'] === $receivedData['attestationObject'];
+        return $storedFingerprint === $newFingerprint; // Sesuaikan dengan logika perbandingan yang sebenarnya
+
     }
 }
