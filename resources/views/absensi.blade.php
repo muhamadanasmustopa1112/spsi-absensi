@@ -189,8 +189,8 @@
                             rp: { name: "Laravel App" }, // Relaying Party info
                             user: {
                                 id: new Uint8Array(16), // User ID
-                                name: "user@example.com", // Email atau identifier user
-                                displayName: "User Name"
+                                name: "{{$items->email}}", // Email atau identifier user
+                                displayName: "{{$items->name}}"
                             },
                             pubKeyCredParams: [{ alg: -7, type: "public-key" }],
                             authenticatorSelection: {
@@ -206,13 +206,7 @@
                         let clientDataJSON = new Uint8Array(credential.response.clientDataJSON).toString();
                         let attestationObject = new Uint8Array(credential.response.attestationObject).toString();
 
-                        console.log(rawId);
-                        console.log(clientDataJSON);
-                        console.log(attestationObject);
-
-                        alert(rawId + clientDataJSON + attestationObject)
-                        
-
+     
                         $.ajax({
                             url: '{{route ('fingerprint')}}',
                             method: 'POST',

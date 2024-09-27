@@ -173,17 +173,12 @@ class EmployeeController extends Controller
     {
         try {
 
-            $latitude = $request->lat; 
-            $longitude = $request->lng;
-
+ 
             $currentTime = now();
             $eightAM = now()->setTime(8, 0, 0);
 
-            $status;
-            $timeFormat = now()->format('H:i:s');
-            $dateFormat = now()->format('Y-m-d'); 
-            $address = $this->reverseGeocode($latitude, $longitude);
-
+            $status = null;
+ 
             if ($currentTime->greaterThan($eightAM)) {
 
                 $status = "Terlambat";
@@ -204,7 +199,42 @@ class EmployeeController extends Controller
                 return $status;
                 
             } else {
+
                 $status = "Tepat Waktu";
+
+                $latitude = $request->lat; 
+                $longitude = $request->lng;
+            
+                $timeFormat = now()->format('H:i:s');
+                $dateFormat = now()->format('Y-m-d'); 
+                $address = $this->reverseGeocode($latitude, $longitude);
+            
+                $employeeId = $request->employee_id;
+            
+                $existingRecord = DB::table('absensi')
+                                    ->where('employee_id', $employeeId)
+                                    ->where('tanggal', $dateFormat)
+                                    ->exists();
+            
+                if ($existingRecord) {
+                    return 'absen-2x';
+                }
+    
+                $data = AbsensiModel::create([
+                    'employee_id' => $request->employee_id,
+                    'jam' => $timeFormat,
+                    'tanggal' => $dateFormat,
+                    'address' => $address,
+                    'status' => $status,
+                    'alasan' => '-'
+                ]);
+            
+                if ($data) {
+                    return 'success';
+                } else {
+                    return 'Failed to save data';
+                }
+
             }
 
             // return $request->employee_id;
@@ -221,9 +251,6 @@ class EmployeeController extends Controller
         try {
             $latitude = $request->lat; 
             $longitude = $request->lng;
-        
-            $currentTime = now();
-            $eightAM = now()->setTime(8, 0, 0);
         
             $status = "Terlambat";
             $timeFormat = now()->format('H:i:s');
