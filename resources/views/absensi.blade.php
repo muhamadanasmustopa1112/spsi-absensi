@@ -187,7 +187,6 @@
                     
                     // Membuat challenge acak
                     const challenge = new Uint8Array(32);
-                    window.crypto.getRandomValues(challenge); // Menghasilkan nilai acak untuk challenge
 
                     // Menggunakan WebAuthn API untuk menangkap fingerprint
                     navigator.credentials.create({
