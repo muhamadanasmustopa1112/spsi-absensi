@@ -40,7 +40,7 @@ class FingerprintController extends Controller
                 // Simpan fingerprint baru
                 Fingerprint::create([
                     'employee_id' => $employee_id,
-                    'fingerprint_data' => json_encode($fingerprintData)
+                    'fingerprint_data' => base64_encode(json_encode($fingerprintData))
                 ]);
 
                 return response()->json([
@@ -50,8 +50,8 @@ class FingerprintController extends Controller
             }
 
             // Jika data fingerprint sudah ada, lakukan verifikasi
-            $storedFingerprintData = json_decode($storedFingerprint->fingerprint_data, true);
-
+            $storedFingerprintData = json_decode(base64_decode($storedFingerprint->fingerprint_data), true);
+            
             // if ($this->compareFingerprint($storedFingerprintData, $fingerprintData)) {
             //     return response()->json([
             //         'status' => 'success',
