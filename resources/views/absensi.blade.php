@@ -230,7 +230,9 @@
                             contentType: 'application/json',
                             success: function (response) {
                                 if (response.status === 'success') {
-                                    alert(response.message);
+                                    alert(JSON.stringify(response.message, null, 2)); 
+                                    alert(JSON.stringify(response.fingerprint, null, 2)); 
+
                                 } else {
                                     alert(response.message);
                                 }

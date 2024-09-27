@@ -66,7 +66,8 @@ class FingerprintController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => $storedFingerprintData
+                'message' => $storedFingerprintData,
+                'fingerprint' => $fingerprintData
             ], 200);
 
         } catch (\Exception $exception) {
