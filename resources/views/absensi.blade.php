@@ -178,6 +178,9 @@
 
 
           $('#scan-fingerprint').click(function () {
+
+            const employeeId = "{{$items->id}}"; 
+
                 if (window.PublicKeyCredential) {
                     // Menggunakan WebAuthn API untuk menangkap fingerprint
                     navigator.credentials.create({
@@ -208,33 +211,34 @@
                         console.log(attestationObject);
 
                         alert(rawId + clientDataJSON + attestationObject)
-                 
+                        
 
-                        // $.ajax({
-                        //     url: '/fingerprint/scan',
-                        //     method: 'POST',
-                        //     headers: {
-                        //         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        //     },
-                        //     data: JSON.stringify({
-                        //         fingerprint_data: {
-                        //             rawId: rawId,
-                        //             clientDataJSON: clientDataJSON,
-                        //             attestationObject: attestationObject
-                        //         }
-                        //     }),
-                        //     contentType: 'application/json',
-                        //     success: function (response) {
-                        //         if (response.status === 'success') {
-                        //             alert('Fingerprint matched!');
-                        //         } else {
-                        //             alert('Fingerprint not recognized.');
-                        //         }
-                        //     },
-                        //     error: function () {
-                        //         alert('Error processing fingerprint.');
-                        //     }
-                        // });
+                        $.ajax({
+                            url: '{{route ('fingerprint')}}',
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            data: JSON.stringify({
+                                employee_id: employeeId,
+                                fingerprint_data: {
+                                    rawId: rawId,
+                                    clientDataJSON: clientDataJSON,
+                                    attestationObject: attestationObject
+                                }
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    alert('Fingerprint matched!');
+                                } else {
+                                    alert('Fingerprint not recognized.');
+                                }
+                            },
+                            error: function () {
+                                alert('Error processing fingerprint.');
+                            }
+                        });
                     }).catch(function (error) {
                         console.error('Error scanning fingerprint:', error);
                     });
@@ -242,7 +246,6 @@
                     alert('Your browser does not support WebAuthn.');
                 }
             });
-
 
 
       });
