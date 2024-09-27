@@ -177,76 +177,77 @@
 
 
 
-          $('#scan-fingerprint').click(function () {
+          $('#scan-fingerprint').click(function (e) { // Tambahkan e sebagai parameter
+                e.preventDefault();
 
-            e.preventDefault();
+                const employeeId = "{{$items->id}}"; 
 
-            const employeeId = "{{$items->id}}"; 
+                // Cek apakah browser mendukung WebAuthn
+                if (window.PublicKeyCredential) {
+                    
+                    // Membuat challenge acak
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge); // Menghasilkan nilai acak untuk challenge
 
-            // Cek apakah browser mendukung WebAuthn
-            if (window.PublicKeyCredential) {
-                
-                // Membuat challenge acak (di backend, Anda harus membuat challenge acak)
-                const challenge = new Uint8Array(32); 
-
-                // Menggunakan WebAuthn API untuk menangkap fingerprint
-                navigator.credentials.create({
-                    publicKey: {
-                        challenge: challenge,
-                        rp: { name: "Laravel App" }, // Relaying Party info
-                        user: {
-                            id: new TextEncoder().encode(employeeId), // ID pengguna dalam bentuk Uint8Array
-                            name: "{{ $items->email }}", // Email atau identifier user
-                            displayName: "{{ $items->name }}" // Nama pengguna
-                        },
-                        pubKeyCredParams: [{ alg: -7, type: "public-key" }],
-                        authenticatorSelection: {
-                            authenticatorAttachment: "platform", // Menggunakan device authenticator
-                            userVerification: "required"
-                        },
-                        timeout: 60000,
-                        attestation: "direct"
-                    }
-                }).then(function (credential) {
-                    // Jika fingerprint berhasil di-scan, kirim ke server Laravel
-                    const rawId = Array.from(new Uint8Array(credential.rawId)); // Konversi ke array untuk JSON
-                    const clientDataJSON = Array.from(new Uint8Array(credential.response.clientDataJSON)); // Konversi ke array untuk JSON
-                    const attestationObject = Array.from(new Uint8Array(credential.response.attestationObject)); // Konversi ke array untuk JSON
-
-                    $.ajax({
-                        url: '{{ route('fingerprint') }}', // Rute Laravel untuk menyimpan fingerprint
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Tambahkan CSRF token untuk keamanan
-                        },
-                        data: JSON.stringify({
-                            employee_id: employeeId,
-                            fingerprint_data: {
-                                rawId: rawId,
-                                clientDataJSON: clientDataJSON,
-                                attestationObject: attestationObject
-                            }
-                        }),
-                        contentType: 'application/json',
-                        success: function (response) {
-                            if (response.status === 'success') {
-                                alert('Fingerprint matched!');
-                            } else {
-                                alert('Fingerprint not recognized.');
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error processing fingerprint:', xhr.responseText);
-                            alert('Error processing fingerprint: ' + error);
+                    // Menggunakan WebAuthn API untuk menangkap fingerprint
+                    navigator.credentials.create({
+                        publicKey: {
+                            challenge: challenge,
+                            rp: { name: "Laravel App" }, // Relaying Party info
+                            user: {
+                                id: new TextEncoder().encode(employeeId), // ID pengguna dalam bentuk Uint8Array
+                                name: "{{ $items->email }}", // Email atau identifier user
+                                displayName: "{{ $items->name }}" // Nama pengguna
+                            },
+                            pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                            authenticatorSelection: {
+                                authenticatorAttachment: "platform", // Menggunakan device authenticator
+                                userVerification: "required"
+                            },
+                            timeout: 60000,
+                            attestation: "direct"
                         }
+                    }).then(function (credential) {
+                        // Jika fingerprint berhasil di-scan, kirim ke server Laravel
+                        const rawId = Array.from(new Uint8Array(credential.rawId)); // Konversi ke array untuk JSON
+                        const clientDataJSON = Array.from(new Uint8Array(credential.response.clientDataJSON)); // Konversi ke array untuk JSON
+                        const attestationObject = Array.from(new Uint8Array(credential.response.attestationObject)); // Konversi ke array untuk JSON
+
+                        $.ajax({
+                            url: '{{ route('fingerprint') }}', // Rute Laravel untuk menyimpan fingerprint
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Tambahkan CSRF token untuk keamanan
+                            },
+                            data: JSON.stringify({
+                                employee_id: employeeId,
+                                fingerprint_data: {
+                                    rawId: rawId,
+                                    clientDataJSON: clientDataJSON,
+                                    attestationObject: attestationObject
+                                }
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    alert('Fingerprint matched!');
+                                } else {
+                                    alert('Fingerprint not recognized.');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error processing fingerprint:', xhr.responseText);
+                                alert('Error processing fingerprint: ' + error);
+                            }
+                        });
+                    }).catch(function (error) {
+                        console.error('Error scanning fingerprint:', error);
+                        alert('Error scanning fingerprint: ' + error.message);
                     });
-                }).catch(function (error) {
-                    console.error('Error scanning fingerprint:', error);
-                    alert('Error scanning fingerprint: ' + error.message);
-                });
-            } else {
-                alert('Your browser does not support WebAuthn.');
-            }
+                } else {
+                    alert('Your browser does not support WebAuthn.');
+                }
+            });
 
 
 
