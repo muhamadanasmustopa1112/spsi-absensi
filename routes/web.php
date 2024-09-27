@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Middleware\FingerprintMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,7 +16,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/address', [EmployeeController::class, 'showLocation'])->name('address');
 Route::resource('/employee', EmployeeController::class);
-Route::get('/absensi/{id}', [EmployeeController::class, 'absensi'])->name('absensi');
+Route::get('/absensi/{id}', [EmployeeController::class, 'absensi'])->name('absensi')->middleware(FingerprintMiddleware::class);;
 Route::post('/insert-absensi', [EmployeeController::class, 'insertAbsensi'])->name('insert-absensi');
 Route::post('/insert-late-absensi', [EmployeeController::class, 'lateAbsensi'])->name('late-absensi');
 

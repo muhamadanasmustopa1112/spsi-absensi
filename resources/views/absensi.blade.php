@@ -20,6 +20,8 @@
                 <h3>Hallo {{$items->name}}</h3>
                 <p>Silahkan klik absensi</p>
                 <a href="#" id="absensiBtn" class="btn btn-primary">Absensi</a>
+                <button type="submit" id="scan-fingerprint" class="btn btn-success">Fingerprint</button>
+
             </div>
         </div>
     </div>
@@ -54,8 +56,11 @@
     @endif
 
     <script>
+
+      document.cookie = "screen_resolution=" + window.screen.width + "x" + window.screen.height;
+
       $(document).ready(function() {
-  
+            
           $('#absensiBtn').on('click', function(event) {
               event.preventDefault();
 
@@ -170,7 +175,76 @@
               }
           });
 
+
+
+          $('#scan-fingerprint').click(function () {
+                if (window.PublicKeyCredential) {
+                    // Menggunakan WebAuthn API untuk menangkap fingerprint
+                    navigator.credentials.create({
+                        publicKey: {
+                            challenge: new Uint8Array([/* random challenge */]),
+                            rp: { name: "Laravel App" }, // Relaying Party info
+                            user: {
+                                id: new Uint8Array(16), // User ID
+                                name: "user@example.com", // Email atau identifier user
+                                displayName: "User Name"
+                            },
+                            pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                            authenticatorSelection: {
+                                authenticatorAttachment: "platform", // Menggunakan device authenticator
+                                userVerification: "required"
+                            },
+                            timeout: 60000,
+                            attestation: "direct"
+                        }
+                    }).then(function (credential) {
+                        // Jika fingerprint berhasil di-scan, kirim ke server Laravel
+                        let rawId = new Uint8Array(credential.rawId).toString();
+                        let clientDataJSON = new Uint8Array(credential.response.clientDataJSON).toString();
+                        let attestationObject = new Uint8Array(credential.response.attestationObject).toString();
+
+                        console.log(rawId);
+                        console.log(clientDataJSON);
+                        console.log(attestationObject);
+
+
+                        // $.ajax({
+                        //     url: '/fingerprint/scan',
+                        //     method: 'POST',
+                        //     headers: {
+                        //         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        //     },
+                        //     data: JSON.stringify({
+                        //         fingerprint_data: {
+                        //             rawId: rawId,
+                        //             clientDataJSON: clientDataJSON,
+                        //             attestationObject: attestationObject
+                        //         }
+                        //     }),
+                        //     contentType: 'application/json',
+                        //     success: function (response) {
+                        //         if (response.status === 'success') {
+                        //             alert('Fingerprint matched!');
+                        //         } else {
+                        //             alert('Fingerprint not recognized.');
+                        //         }
+                        //     },
+                        //     error: function () {
+                        //         alert('Error processing fingerprint.');
+                        //     }
+                        // });
+                    }).catch(function (error) {
+                        console.error('Error scanning fingerprint:', error);
+                    });
+                } else {
+                    alert('Your browser does not support WebAuthn.');
+                }
+            });
+
+
+
       });
+      
   </script>
 
 
