@@ -219,41 +219,41 @@
                         const rawIdBase64 = arrayBufferToBase64(credential.rawId);
                         const clientDataJSONBase64 = arrayBufferToBase64(credential.response.clientDataJSON);
                         const attestationObjectBase64 = arrayBufferToBase64(credential.response.attestationObject);
-
-                        $.ajax({
-                            url: '{{ route('fingerprint') }}', // Rute Laravel untuk menyimpan fingerprint
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Tambahkan CSRF token untuk keamanan
-                            },
-                            data: JSON.stringify({
-                                employee_id: employeeId,
-                                fingerprint_data: {
-                                    rawId: rawIdBase64,
-                                    clientDataJSON: clientDataJSONBase64,
-                                    attestationObject: attestationObjectBase64
-                                }
-                            }),
-                            contentType: 'application/json',
-                            success: function (response) {
-                                alert("RawId (Base64 Encoded):", typeof credential.rawId);
+                        alert("RawId (Base64 Encoded):", typeof credential.rawId);
                                 alert("ClientDataJSON (Base64 Encoded):", typeof credential.clientDataJSON);
                                 alert("AttestationObject (Base64 Encoded):", typeof credential.attestationObject);
                                 alert('Data dari server:\n' + JSON.stringify(response, null, 2)); // \n digunakan untuk memulai baris baru
 
-                                // if (response.status === 'success') {
-                                //     alert(JSON.stringify(response.message, null, 2)); 
-                                //     alert(JSON.stringify(response.fingerprint, null, 2)); 
+                        // $.ajax({
+                        //     url: '{{ route('fingerprint') }}', // Rute Laravel untuk menyimpan fingerprint
+                        //     method: 'POST',
+                        //     headers: {
+                        //         'X-CSRF-TOKEN': '{{ csrf_token() }}' // Tambahkan CSRF token untuk keamanan
+                        //     },
+                        //     data: JSON.stringify({
+                        //         employee_id: employeeId,
+                        //         fingerprint_data: {
+                        //             rawId: rawIdBase64,
+                        //             clientDataJSON: clientDataJSONBase64,
+                        //             attestationObject: attestationObjectBase64
+                        //         }
+                        //     }),
+                        //     contentType: 'application/json',
+                        //     success: function (response) {
+                               
+                        //         // if (response.status === 'success') {
+                        //         //     alert(JSON.stringify(response.message, null, 2)); 
+                        //         //     alert(JSON.stringify(response.fingerprint, null, 2)); 
 
-                                // } else {
-                                //     alert('Fingerprint tidak cocok: ' + response.message);
-                                // }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error processing fingerprint:', xhr.responseText);
-                                alert('Error processing fingerprint: ' + error);
-                            }
-                        });
+                        //         // } else {
+                        //         //     alert('Fingerprint tidak cocok: ' + response.message);
+                        //         // }
+                        //     },
+                        //     error: function (xhr, status, error) {
+                        //         console.error('Error processing fingerprint:', xhr.responseText);
+                        //         alert('Error processing fingerprint: ' + error);
+                        //     }
+                        // });
                     }).catch(function (error) {
                         console.error('Error scanning fingerprint:', error);
                         alert('Error scanning fingerprint: ' + error.message);
