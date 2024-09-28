@@ -57,7 +57,6 @@
 
     <script>
 
-      document.cookie = "screen_resolution=" + window.screen.width + "x" + window.screen.height;
 
       $(document).ready(function() {
             
@@ -207,10 +206,10 @@
                             attestation: "direct"
                         }
                     }).then(function (credential) {
-                        // Jika fingerprint berhasil di-scan, kirim ke server Laravel
-                        const rawId = Array.from(new Uint8Array(credential.rawId)); // Konversi ke array untuk JSON
-                        const clientDataJSON = Array.from(new Uint8Array(credential.response.clientDataJSON)); // Konversi ke array untuk JSON
-                        const attestationObject = Array.from(new Uint8Array(credential.response.attestationObject)); // Konversi ke array untuk JSON
+
+                        const rawIdBase64 = arrayBufferToBase64(credential.rawId);
+                        const clientDataJSONBase64 = arrayBufferToBase64(credential.response.clientDataJSON);
+                        const attestationObjectBase64 = arrayBufferToBase64(credential.response.attestationObject);
 
                         $.ajax({
                             url: '{{ route('fingerprint') }}', // Rute Laravel untuk menyimpan fingerprint
@@ -221,9 +220,9 @@
                             data: JSON.stringify({
                                 employee_id: employeeId,
                                 fingerprint_data: {
-                                    rawId: rawId,
-                                    clientDataJSON: clientDataJSON,
-                                    attestationObject: attestationObject
+                                    rawId: rawIdBase64,
+                                    clientDataJSON: clientDataJSONBase64,
+                                    attestationObject: attestationObjectBase64
                                 }
                             }),
                             contentType: 'application/json',
@@ -250,7 +249,16 @@
                 }
             });
 
-
+            // Function to convert Uint8Array to Base64
+            function arrayBufferToBase64(buffer) {
+                let binary = '';
+                let bytes = new Uint8Array(buffer);
+                let len = bytes.byteLength;
+                for (let i = 0; i < len; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                return window.btoa(binary);
+            }
 
       });
       

@@ -30,45 +30,51 @@ class FingerprintController extends Controller
     public function store(Request $request)
     {
         try {
-            $fingerprintData = $request->input('fingerprint_data');
-            $employee_id = $request->input('employee_id');
 
-            $storedFingerprint = Fingerprint::where('employee_id', $employee_id)->first();
+            $request->validate([
+                'employee_id' => 'required|integer',
+                'fingerprint_data.rawId' => 'required|string',
+                'fingerprint_data.clientDataJSON' => 'required|string',
+                'fingerprint_data.attestationObject' => 'required|string'
+            ]);
 
-            // Jika tidak ada fingerprint yang tersimpan, simpan data fingerprint
+             // Decode the base64-encoded fingerprint data
+            $rawId = base64_decode($request->input('fingerprint_data.rawId'));
+            $clientDataJSON = base64_decode($request->input('fingerprint_data.clientDataJSON'));
+            $attestationObject = base64_decode($request->input('fingerprint_data.attestationObject'));
+
+     
+       
+
+            // Retrieve stored fingerprint data
+            $storedFingerprint = Fingerprint::where('employee_id', $request->input('employee_id'))->first();
+                    
             if (!$storedFingerprint) {
-                // Simpan fingerprint baru
-                Fingerprint::create([
-                    'employee_id' => $employee_id,
-                    'fingerprint_data' => json_encode($fingerprintData)
-                ]);
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Fingerprint data saved successfully.'
-                ], 201);
+                // Save fingerprint data to the database
+                $fingerprint = Fingerprint::updateOrCreate(
+                    ['employee_id' => $request->input('employee_id')],
+                    [
+                        'raw_id' => $rawId,
+                        'client_data_json' => $clientDataJSON,
+                        'attestation_object' => $attestationObject
+                    ]
+                );
+
+                return response()->json(['status' => 'success', 'message' => 'Fingerprint Data Saved']);
             }
 
-            // Jika data fingerprint sudah ada, lakukan verifikasi
-            $storedFingerprintData = json_decode($storedFingerprint->fingerprint_data, true);
-
-            if ($this->compareFingerprint($storedFingerprintData, $fingerprintData)) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Fingerprint verification successful.'
-                ], 200);
+            // Compare data
+            if (
+                hash_equals($rawId, $storedFingerprint->raw_id) &&
+                hash_equals($clientDataJSON, $storedFingerprint->client_data_json) &&
+                hash_equals($attestationObject, $storedFingerprint->attestation_object)
+            ) {
+                return response()->json(['status' => 'success', 'message' => 'Fingerprint match']);
             } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Fingerprint verification failed.'
-                ], 401);
+                return response()->json(['status' => 'error', 'message' => 'Fingerprint mismatch']);
             }
 
-            return response()->json([
-                'status' => 'success',
-                'message' => $storedFingerprintData,
-                'fingerprint' => $fingerprintData
-            ], 200);
 
         } catch (\Exception $exception) {
             Log::error('Error processing fingerprint:', ['error' => $exception->getMessage()]);

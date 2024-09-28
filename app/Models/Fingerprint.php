@@ -10,7 +10,14 @@ class Fingerprint extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['employee_id', 'fingerprint_data'];
+    protected $table = 'fingerprints';
+
+    protected $fillable = [
+        'employee_id',
+        'raw_id',
+        'client_data_json',
+        'attestation_object',
+    ];
 
     public function employee(): BelongsTo
     {
