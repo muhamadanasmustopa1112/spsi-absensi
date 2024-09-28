@@ -236,6 +236,9 @@
                             }),
                             contentType: 'application/json',
                             success: function (response) {
+                                alert("RawId (Base64 Encoded):", rawIdBase64);
+                                alert("ClientDataJSON (Base64 Encoded):", clientDataJSONBase64);
+                                alert("AttestationObject (Base64 Encoded):", attestationObjectBase64);
                                 alert('Data dari server:\n' + JSON.stringify(response, null, 2)); // \n digunakan untuk memulai baris baru
 
                                 // if (response.status === 'success') {
