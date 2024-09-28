@@ -67,7 +67,7 @@ class FingerprintController extends Controller
             return response()->json([
                 'status' => 'debug',
                 'data' => [
-                    'stored_rawId' => json_decode($storedFingerprint->raw_id),
+                    'stored_rawId' => base64_decode($storedFingerprint->raw_id),
      
                 ]
             ]);
