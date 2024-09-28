@@ -236,7 +236,7 @@
                             }),
                             contentType: 'application/json',
                             success: function (response) {
-                                alert('Data dari server:', JSON.stringify(response, null, 2)); // Ini akan mencetak data yang dikirim dari server
+                                alert('Data dari server:\n' + JSON.stringify(response, null, 2)); // \n digunakan untuk memulai baris baru
 
                                 // if (response.status === 'success') {
                                 //     alert(JSON.stringify(response.message, null, 2)); 
