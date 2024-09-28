@@ -71,7 +71,7 @@ class FingerprintController extends Controller
                 'received_attestationObject' => $attestationObject,
                 'stored_attestationObject' => $storedFingerprint->attestation_object
             ]);
-            
+
             // Compare data
             if (
                 hash_equals($rawId, $storedFingerprint->raw_id) &&
@@ -86,10 +86,8 @@ class FingerprintController extends Controller
 
         } catch (\Exception $exception) {
             Log::error('Error processing fingerprint:', ['error' => $exception->getMessage()]);
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An error occurred while processing the fingerprint.'
-            ], 500);
+            return response()->json(['status' => 'error', 'message' => $exception->getMessage()]);
+
         }
     }
 

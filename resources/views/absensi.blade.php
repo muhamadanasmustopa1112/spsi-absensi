@@ -232,7 +232,7 @@
                                     alert(JSON.stringify(response.fingerprint, null, 2)); 
 
                                 } else {
-                                    alert(response.message);
+                                    alert('Fingerprint tidak cocok: ' + response.message);
                                 }
                             },
                             error: function (xhr, status, error) {
