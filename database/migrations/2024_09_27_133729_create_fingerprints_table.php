@@ -19,8 +19,6 @@ return new class extends Migration
             $table->binary('attestation_object'); // To store attestationObject binary data
             $table->timestamps();
 
-            // Add index or foreign key constraint for employee_id if necessary
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
         });
     }
 
