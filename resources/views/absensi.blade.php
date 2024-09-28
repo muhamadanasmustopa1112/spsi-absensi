@@ -219,8 +219,8 @@
                         const rawIdBase64 = arrayBufferToBase64(credential.rawId);
                         const clientDataJSONBase64 = arrayBufferToBase64(credential.response.clientDataJSON);
                         const attestationObjectBase64 = arrayBufferToBase64(credential.response.attestationObject);
-                        alert("RawId (Base64 Encoded):", typeof credential.rawId);
-                                alert("ClientDataJSON (Base64 Encoded):", typeof credential.clientDataJSON);
+                        alert("RawId (Base64 Encoded):", rawIdBase64);
+                                alert("ClientDataJSON (Base64 Encoded):", credential.rawId);
                                 alert("AttestationObject (Base64 Encoded):", typeof credential.attestationObject);
 
                         // $.ajax({
