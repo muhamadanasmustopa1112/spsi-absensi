@@ -222,7 +222,6 @@
                         alert("RawId (Base64 Encoded):", typeof credential.rawId);
                                 alert("ClientDataJSON (Base64 Encoded):", typeof credential.clientDataJSON);
                                 alert("AttestationObject (Base64 Encoded):", typeof credential.attestationObject);
-                                alert('Data dari server:\n' + JSON.stringify(response, null, 2)); // \n digunakan untuk memulai baris baru
 
                         // $.ajax({
                         //     url: '{{ route('fingerprint') }}', // Rute Laravel untuk menyimpan fingerprint
