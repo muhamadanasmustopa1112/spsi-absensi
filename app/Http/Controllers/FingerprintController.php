@@ -72,7 +72,11 @@ class FingerprintController extends Controller
             ) {
                 return response()->json(['status' => 'success', 'message' => 'Fingerprint match']);
             } else {
-                return response()->json(['status' => 'error', 'message' => 'Fingerprint mismatch']);
+                return response()->json([
+                    'status' => 'error', 
+                    'message' => $storedFingerprint->raw_id,
+                    'rawid_input' => $rawId
+                ]);
             }
 
 

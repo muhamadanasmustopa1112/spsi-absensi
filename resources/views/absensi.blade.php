@@ -233,6 +233,7 @@
 
                                 } else {
                                     alert(response.message);
+                                    alert(response.rawid_input);
                                 }
                             },
                             error: function (xhr, status, error) {
