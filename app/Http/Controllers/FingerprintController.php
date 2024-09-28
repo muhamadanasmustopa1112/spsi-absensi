@@ -43,8 +43,6 @@ class FingerprintController extends Controller
             $clientDataJSON = base64_decode($request->input('fingerprint_data.clientDataJSON'));
             $attestationObject = base64_decode($request->input('fingerprint_data.attestationObject'));
 
-     
-       
 
             // Retrieve stored fingerprint data
             $storedFingerprint = Fingerprint::where('employee_id', $request->input('employee_id'))->first();
@@ -64,6 +62,16 @@ class FingerprintController extends Controller
                 return response()->json(['status' => 'success', 'message' => 'Fingerprint Data Saved']);
             }
 
+
+            dd([
+                'received_rawId' => $rawId,
+                'stored_rawId' => $storedFingerprint->raw_id,
+                'received_clientDataJSON' => $clientDataJSON,
+                'stored_clientDataJSON' => $storedFingerprint->client_data_json,
+                'received_attestationObject' => $attestationObject,
+                'stored_attestationObject' => $storedFingerprint->attestation_object
+            ]);
+            
             // Compare data
             if (
                 hash_equals($rawId, $storedFingerprint->raw_id) &&
