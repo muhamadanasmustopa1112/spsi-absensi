@@ -72,16 +72,16 @@ class FingerprintController extends Controller
                 'stored_attestationObject' => $storedFingerprint->attestation_object
             ]);
 
-            // Compare data
-            if (
-                hash_equals($rawId, $storedFingerprint->raw_id) &&
-                hash_equals($clientDataJSON, $storedFingerprint->client_data_json) &&
-                hash_equals($attestationObject, $storedFingerprint->attestation_object)
-            ) {
-                return response()->json(['status' => 'success', 'message' => 'Fingerprint match']);
-            } else {
-                return response()->json(['status' => 'error', 'message' => 'Fingerprint mismatch']);
-            }
+            // // Compare data
+            // if (
+            //     hash_equals($rawId, $storedFingerprint->raw_id) &&
+            //     hash_equals($clientDataJSON, $storedFingerprint->client_data_json) &&
+            //     hash_equals($attestationObject, $storedFingerprint->attestation_object)
+            // ) {
+            //     return response()->json(['status' => 'success', 'message' => 'Fingerprint match']);
+            // } else {
+            //     return response()->json(['status' => 'error', 'message' => 'Fingerprint mismatch']);
+            // }
 
 
         } catch (\Exception $exception) {

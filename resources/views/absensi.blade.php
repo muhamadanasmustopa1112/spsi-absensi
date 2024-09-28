@@ -238,13 +238,13 @@
                             success: function (response) {
                                 alert('Data dari server:', JSON.stringify(response, null, 2)); // Ini akan mencetak data yang dikirim dari server
 
-                                if (response.status === 'success') {
-                                    alert(JSON.stringify(response.message, null, 2)); 
-                                    alert(JSON.stringify(response.fingerprint, null, 2)); 
+                                // if (response.status === 'success') {
+                                //     alert(JSON.stringify(response.message, null, 2)); 
+                                //     alert(JSON.stringify(response.fingerprint, null, 2)); 
 
-                                } else {
-                                    alert('Fingerprint tidak cocok: ' + response.message);
-                                }
+                                // } else {
+                                //     alert('Fingerprint tidak cocok: ' + response.message);
+                                // }
                             },
                             error: function (xhr, status, error) {
                                 console.error('Error processing fingerprint:', xhr.responseText);
