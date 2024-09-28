@@ -67,11 +67,11 @@ class FingerprintController extends Controller
             return response()->json([
                 'status' => 'debug',
                 'data' => [
-                    'received_rawId' => $rawId,
+                    'received_rawId' => $request->input('fingerprint_data.rawId'),
                     'stored_rawId' => $storedFingerprint->raw_id,
-                    'received_clientDataJSON' => $clientDataJSON,
+                    'received_clientDataJSON' => $$request->input('fingerprint_data.clientDataJSON'),
                     'stored_clientDataJSON' => $storedFingerprint->client_data_json,
-                    'received_attestationObject' => $attestationObject,
+                    'received_attestationObject' => $$request->input('fingerprint_data.attestationObject'),
                     'stored_attestationObject' => $storedFingerprint->attestation_object,
                 ]
             ]);
