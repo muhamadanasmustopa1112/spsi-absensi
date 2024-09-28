@@ -47,29 +47,33 @@ class FingerprintController extends Controller
             // Retrieve stored fingerprint data
             $storedFingerprint = Fingerprint::where('employee_id', $request->input('employee_id'))->first();
                     
-            if (!$storedFingerprint) {
+            // if (!$storedFingerprint) {
 
-                // Save fingerprint data to the database
-                Fingerprint::updateOrCreate(
-                    ['employee_id' => $request->input('employee_id')],
-                    [
-                        'raw_id' => $rawId,
-                        'client_data_json' => $clientDataJSON,
-                        'attestation_object' => $attestationObject
-                    ]
-                );
+            //     // Save fingerprint data to the database
+            //     Fingerprint::updateOrCreate(
+            //         ['employee_id' => $request->input('employee_id')],
+            //         [
+            //             'raw_id' => $rawId,
+            //             'client_data_json' => $clientDataJSON,
+            //             'attestation_object' => $attestationObject
+            //         ]
+            //     );
 
-                return response()->json(['status' => 'success', 'message' => 'Fingerprint Data Saved']);
-            }
+            //     return response()->json(['status' => 'success', 'message' => 'Fingerprint Data Saved']);
+            // }
 
 
+            // Kirim data debug ke frontend
             return response()->json([
-                'received_rawId' => $rawId,
-                'stored_rawId' => $storedFingerprint->raw_id,
-                'received_clientDataJSON' => $clientDataJSON,
-                'stored_clientDataJSON' => $storedFingerprint->client_data_json,
-                'received_attestationObject' => $attestationObject,
-                'stored_attestationObject' => $storedFingerprint->attestation_object
+                'status' => 'debug',
+                'data' => [
+                    'received_rawId' => $rawId,
+                    'stored_rawId' => $storedFingerprint->raw_id,
+                    'received_clientDataJSON' => $clientDataJSON,
+                    'stored_clientDataJSON' => $storedFingerprint->client_data_json,
+                    'received_attestationObject' => $attestationObject,
+                    'stored_attestationObject' => $storedFingerprint->attestation_object,
+                ]
             ]);
 
             // // Compare data
