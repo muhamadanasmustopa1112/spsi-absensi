@@ -52,7 +52,7 @@ class FingerprintController extends Controller
             if (!$storedFingerprint) {
 
                 // Save fingerprint data to the database
-                $fingerprint = Fingerprint::updateOrCreate(
+                Fingerprint::updateOrCreate(
                     ['employee_id' => $request->input('employee_id')],
                     [
                         'raw_id' => $rawId,
