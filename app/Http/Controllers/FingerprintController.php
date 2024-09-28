@@ -63,7 +63,7 @@ class FingerprintController extends Controller
             }
 
 
-            dd([
+            return response()->json([
                 'received_rawId' => $rawId,
                 'stored_rawId' => $storedFingerprint->raw_id,
                 'received_clientDataJSON' => $clientDataJSON,

@@ -227,6 +227,8 @@
                             }),
                             contentType: 'application/json',
                             success: function (response) {
+                                alert('Data dari server:', response); // Ini akan mencetak data yang dikirim dari server
+
                                 if (response.status === 'success') {
                                     alert(JSON.stringify(response.message, null, 2)); 
                                     alert(JSON.stringify(response.fingerprint, null, 2)); 
